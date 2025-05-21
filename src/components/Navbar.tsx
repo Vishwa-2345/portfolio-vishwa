@@ -61,7 +61,7 @@ const Navbar: React.FC<NavbarProps> = ({ theme }) => {
               }}
             >
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600">
-                Portfolio
+                Vishwa
               </span>
             </a>
           </div>
