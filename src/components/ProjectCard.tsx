@@ -60,7 +60,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
             href={demoLink}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center text-sm font-medium text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 transition-colors duration-300"
+            className="flex items-center text-sm font-medium text-yellow-600 dark:text-yellow-400 hover:text-yellow-700 dark:hover:text-yellow-300 transition-colors duration-300"
           >
             Live Demo <ExternalLink size={16} className="ml-1" />
           </a>
@@ -68,7 +68,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
             href={codeLink}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-300 transition-colors duration-300"
+            className="flex items-center text-sm font-medium text-cyan-600 dark:text-cyan-400 hover:text-cyan-800 dark:hover:text-cyan-300 transition-colors duration-300"
           >
             View Code <Github size={16} className="ml-1" />
           </a>

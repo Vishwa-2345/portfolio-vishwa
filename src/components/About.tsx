@@ -35,7 +35,7 @@ const About: React.FC = () => {
               <div className="absolute inset-0 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full"></div>
               <div className="absolute inset-2 rounded-full overflow-hidden bg-gray-200">
                 <img 
-                  src="../images/1000062569.webp" 
+                  src="/1000062569.webp" 
                   alt="Profile" 
                   className="w-full h-full object-cover mix-blend-multiply"
                 />
@@ -54,16 +54,16 @@ const About: React.FC = () => {
               I'm a passionate web developer with expertise in creating stunning, functional websites and applications. With a strong foundation in front-end technologies, I bring ideas to life through clean code and creative solutions.
             </p>
             <p className="text-lg mb-6 dark:text-gray-300 text-gray-700 leading-relaxed">
-              My journey in web development began 1 years ago, and since then, I've worked on a variety of projects that have sharpened my skills and broadened my expertise. I believe in continuous learning and staying updated with the latest trends and technologies.
+              My journey in web development began 1 year ago, and since then, I've worked on a variety of projects that have sharpened my skills and broadened my expertise. I believe in continuous learning and staying updated with the latest trends and technologies.
             </p>
             <div className="flex flex-wrap gap-4">
               <div className="dark:bg-gray-800 bg-white px-4 py-2 rounded-full dark:text-purple-400 text-purple-600 font-medium shadow-md">
                 🎓 Artificial Intelligence and Data Science UnderGraduate
               </div>
               <div className="dark:bg-gray-800 bg-white px-4 py-2 rounded-full dark:text-pink-400 text-pink-600 font-medium shadow-md">
-                💼 1 Years Experience
+                💼 1 Year Experience
               </div>
-              <div className="dark:bg-gray-800 bg-white px-4 py-2 rounded-full dark:text-purple-400 text-purple-600 font-medium shadow-md">
+              <div className="dark:bg-gray-800 bg-white px-4 py-2 rounded-full dark:text-green-400 text-green-600 font-medium shadow-md">
                 🌎 Remote Worker
               </div>
             </div>

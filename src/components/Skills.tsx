@@ -35,7 +35,7 @@ const Skills: React.FC = () => {
           </h2>
           <div className="mt-2 w-24 h-1 bg-gradient-to-r from-purple-500 to-pink-500 mx-auto rounded-full"></div>
           <p className="mt-4 text-lg max-w-xl mx-auto dark:text-gray-300 text-gray-600">
-            Here are some of the technologies and tools I specialize in
+            Here are some of the technologies and tools I competent in
           </p>
         </div>
 
@@ -49,7 +49,7 @@ const Skills: React.FC = () => {
               icon={skill.icon}
               title={skill.title}
               description={skill.description}
-              level={skill.level}
+             
             />
           ))}
         </div>

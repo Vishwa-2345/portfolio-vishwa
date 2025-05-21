@@ -8,7 +8,7 @@ export const fadeInOnScroll = (element: HTMLElement | null, delay: number = 0) =
           setTimeout(() => {
             element.style.opacity = '1';
             element.style.transform = 'translateY(0)';
-          }, delay * 1000);
+          }, delay * 800);
           observer.unobserve(element);
         }
       });

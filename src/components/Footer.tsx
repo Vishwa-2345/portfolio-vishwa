@@ -15,9 +15,9 @@ const Footer: React.FC = () => {
           </div>
           
           <div className="flex items-center dark:text-gray-400 text-gray-600">
-            <p>© {currentYear} Your Name. All rights reserved.</p>
+            <p>© {currentYear} Vishwa. All rights reserved.</p>
             <Heart size={16} className="mx-2 text-red-500" />
-            <p>Made with passion</p>
+            <p>Made with Love</p>
           </div>
           
           <div className="mt-4 md:mt-0">

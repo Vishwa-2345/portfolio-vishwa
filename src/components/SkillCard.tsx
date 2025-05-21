@@ -5,10 +5,10 @@ interface SkillCardProps {
   icon: keyof typeof LucideIcons;
   title: string;
   description: string;
-  level: number; // 1-10
+ 
 }
 
-const SkillCard: React.FC<SkillCardProps> = ({ icon, title, description, level }) => {
+const SkillCard: React.FC<SkillCardProps> = ({ icon, title, description }) => {
   const IconComponent = LucideIcons[icon];
   
   return (
@@ -29,18 +29,7 @@ const SkillCard: React.FC<SkillCardProps> = ({ icon, title, description, level }
         {description}
       </p>
       
-      <div className="mt-auto">
-        <div className="h-2 w-full bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
-          <div 
-            className="h-full bg-gradient-to-r from-purple-500 to-pink-500 rounded-full transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-700 ease-out"
-            style={{ width: `${level * 10}%`, transform: 'scaleX(1)' }}
-          ></div>
-        </div>
-        <div className="flex justify-between mt-2 text-xs dark:text-gray-400 text-gray-500">
-          <span>Beginner</span>
-          <span>Expert</span>
-        </div>
-      </div>
+    
     </div>
   );
 };
