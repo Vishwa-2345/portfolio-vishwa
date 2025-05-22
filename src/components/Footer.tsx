@@ -10,7 +10,7 @@ const Footer: React.FC = () => {
         <div className="flex flex-col md:flex-row items-center justify-between">
           <div className="text-lg font-bold mb-4 md:mb-0">
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-pink-500">
-              Vishwa
+              Vishwa V
             </span>
           </div>
           

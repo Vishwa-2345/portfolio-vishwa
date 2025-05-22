@@ -184,20 +184,20 @@ const Contact: React.FC = () => {
                   </div>
                   <div className="ml-4">
                     <h4 className="font-medium dark:text-white text-gray-900">LinkedIn</h4>
-                    <p className="text-sm dark:text-gray-400 text-gray-600">Vishwa</p>
+                    <p className="text-sm dark:text-gray-400 text-gray-600">Vishwa V</p>
                   </div>
                 </a>
                 
                 <a 
-                  href="mailto:vishwav@karunya.edu.in" 
+                  href="mailto:pvvishwapvvishwa@gmail.com" 
                   className="flex items-center p-4 dark:bg-gray-700/50 bg-gray-100 rounded-lg hover:shadow-md transition-all duration-300 group"
                 >
                   <div className="w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center group-hover:bg-red-500 transition-colors duration-300">
                     <Mail className="text-gray-600 group-hover:text-white transition-colors duration-300" />
                   </div>
                   <div className="ml-4">
-                    <h4 className="font-medium dark:text-white text-gray-900">Email</h4>
-                    <p className="text-sm dark:text-gray-400 text-gray-600">vishwav@karunya.edu.in</p>
+                    <h4 className="font-medium dark:text-white text-gray-900">Gmail</h4>
+                    <p className="text-sm dark:text-gray-400 text-gray-600">pvvishwapvvishwa@gmail.com</p>
                   </div>
                 </a>
               </div>
