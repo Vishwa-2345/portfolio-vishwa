@@ -1,57 +1,93 @@
-import React, { useEffect, useRef } from 'react';
-import SkillCard from './SkillCard';
-import { skillsData } from '../data/skillsData';
-import { fadeInOnScroll } from '../utils/animations';
+import React from 'react';
+import { motion } from 'framer-motion';
+import { skillGroups } from '../data/skillsData';
+import { fadeInUp, slideInLeft, slideInRight } from '../utils/animations';
 
 const Skills: React.FC = () => {
-  const sectionRef = useRef<HTMLDivElement>(null);
-  const headingRef = useRef<HTMLDivElement>(null);
-  const cardsRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    fadeInOnScroll(sectionRef.current);
-    fadeInOnScroll(headingRef.current, 0.2);
-    fadeInOnScroll(cardsRef.current, 0.4);
-
-    // Staggered animation for skill cards
-    const cards = document.querySelectorAll('.skill-card');
-    cards.forEach((card, index) => {
-      const delay = 0.1 + index * 0.1;
-      (card as HTMLElement).style.transitionDelay = `${delay}s`;
-      fadeInOnScroll(card as HTMLElement, delay);
-    });
-  }, []);
-
   return (
-    <section 
-      id="skills" 
-      ref={sectionRef}
-      className="py-20 transition-colors duration-300 dark:bg-gray-900 bg-gray-100"
-    >
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div ref={headingRef} className="text-center mb-16 opacity-0 transform translate-y-10 transition-all duration-1000">
-          <h2 className="text-3xl font-bold dark:text-white text-gray-900">
-            My <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-pink-500">Skills</span>
-          </h2>
-          <div className="mt-2 w-24 h-1 bg-gradient-to-r from-purple-500 to-pink-500 mx-auto rounded-full"></div>
-          <p className="mt-4 text-lg max-w-xl mx-auto dark:text-gray-300 text-gray-600">
-            Here are some of the technologies and tools I competent in
-          </p>
-        </div>
+    <section id="skills" className="section-padding relative overflow-hidden bg-slate-50/50 dark:bg-slate-900/30">
+      <div className="absolute inset-0 mesh-gradient opacity-30" />
 
-        <div 
-          ref={cardsRef}
-          className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 opacity-0 transform translate-y-10 transition-all duration-1000"
+      <div className="container-custom relative z-10">
+        <motion.div
+          variants={fadeInUp}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          custom={0}
+          className="text-center mb-16"
         >
-          {skillsData.map((skill) => (
-            <SkillCard
-              key={skill.id}
-              icon={skill.icon}
-              title={skill.title}
-              description={skill.description}
-             
-            />
-          ))}
+          <h2 className="text-3xl md:text-4xl font-display font-bold mb-3">
+            My <span className="gradient-text">Skills</span>
+          </h2>
+          <div className="w-20 h-1 bg-gradient-to-r from-emerald-500 to-cyan-500 mx-auto rounded-full" />
+          <p className="mt-4 text-lg max-w-xl mx-auto text-slate-500 dark:text-slate-400">
+            Technologies I use to build scalable and performant applications
+          </p>
+        </motion.div>
+
+        {/* Alternating rows: even index → description left / skills right; odd → flipped */}
+        <div className="space-y-20">
+          {skillGroups.map((group, idx) => {
+            const isEven = idx % 2 === 0;
+            return (
+              <div
+                key={group.category}
+                className={`flex flex-col ${isEven ? 'lg:flex-row' : 'lg:flex-row-reverse'} items-center gap-10 lg:gap-16`}
+              >
+                {/* Description side */}
+                <motion.div
+                  variants={isEven ? slideInLeft : slideInRight}
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: true }}
+                  custom={0.1}
+                  className="w-full lg:w-1/2"
+                >
+                  <span className="inline-block px-3 py-1 rounded-full text-xs font-semibold tracking-wide uppercase bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 mb-3">
+                    {group.category}
+                  </span>
+                  <h3 className="text-2xl md:text-3xl font-display font-bold text-slate-900 dark:text-white mb-4">
+                    {group.title}
+                  </h3>
+                  <p className="text-slate-600 dark:text-slate-400 leading-relaxed text-lg">
+                    {group.description}
+                  </p>
+                </motion.div>
+
+                {/* Skills grid side */}
+                <motion.div
+                  variants={isEven ? slideInRight : slideInLeft}
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: true }}
+                  custom={0.2}
+                  className="w-full lg:w-1/2"
+                >
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                    {group.skills.map((skill, i) => (
+                      <motion.div
+                        key={skill.title}
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ delay: 0.1 + i * 0.08, duration: 0.4 }}
+                        whileHover={{ y: -4, scale: 1.03 }}
+                        className="glass-card p-5 flex flex-col items-center gap-3 text-center cursor-default"
+                      >
+                        <div className={`w-11 h-11 rounded-xl ${skill.color} flex items-center justify-center shadow-sm`}>
+                          <skill.icon size={22} className="text-white" />
+                        </div>
+                        <span className="text-sm font-semibold text-slate-800 dark:text-slate-200">
+                          {skill.title}
+                        </span>
+                      </motion.div>
+                    ))}
+                  </div>
+                </motion.div>
+              </div>
+            );
+          })}
         </div>
       </div>
     </section>

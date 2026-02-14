@@ -1,47 +1,38 @@
-import React, { useEffect, useRef } from 'react';
+import React from 'react';
+import { motion } from 'framer-motion';
 import ProjectCard from './ProjectCard';
 import { projectsData } from '../data/projectsData';
-import { fadeInOnScroll } from '../utils/animations';
+import { fadeInUp, staggerContainer } from '../utils/animations';
 
 const Projects: React.FC = () => {
-  const sectionRef = useRef<HTMLDivElement>(null);
-  const headingRef = useRef<HTMLDivElement>(null);
-  const projectsRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    fadeInOnScroll(sectionRef.current);
-    fadeInOnScroll(headingRef.current, 0.2);
-    fadeInOnScroll(projectsRef.current, 0.4);
-
-    // Staggered animation for project cards
-    const cards = document.querySelectorAll('.project-card');
-    cards.forEach((card, index) => {
-      const delay = 0.1 + index * 0.1;
-      (card as HTMLElement).style.transitionDelay = `${delay}s`;
-      fadeInOnScroll(card as HTMLElement, delay);
-    });
-  }, []);
-
   return (
-    <section 
-      id="projects" 
-      ref={sectionRef}
-      className="py-20 transition-colors duration-300 dark:bg-gray-900/50 bg-white/50 backdrop-blur-sm"
-    >
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div ref={headingRef} className="text-center mb-16 opacity-0 transform translate-y-10 transition-all duration-1000">
-          <h2 className="text-3xl font-bold dark:text-white text-gray-900">
-            My <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-pink-500">Projects</span>
-          </h2>
-          <div className="mt-2 w-24 h-1 bg-gradient-to-r from-purple-500 to-pink-500 mx-auto rounded-full"></div>
-          <p className="mt-4 text-lg max-w-xl mx-auto dark:text-gray-300 text-gray-600">
-            Check out some of my recent work
-          </p>
-        </div>
+    <section id="projects" className="section-padding relative overflow-hidden">
+      <div className="absolute inset-0 mesh-gradient opacity-40" />
 
-        <div 
-          ref={projectsRef}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 opacity-0 transform translate-y-10 transition-all duration-1000"
+      <div className="container-custom relative z-10">
+        <motion.div
+          variants={fadeInUp}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          custom={0}
+          className="text-center mb-16"
+        >
+          <h2 className="text-3xl md:text-4xl font-display font-bold mb-3">
+            My <span className="gradient-text">Projects</span>
+          </h2>
+          <div className="w-20 h-1 bg-gradient-to-r from-emerald-500 to-cyan-500 mx-auto rounded-full" />
+          <p className="mt-4 text-lg max-w-xl mx-auto text-slate-500 dark:text-slate-400">
+            A selection of recent work that I'm proud of
+          </p>
+        </motion.div>
+
+        <motion.div
+          variants={staggerContainer}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.1 }}
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
         >
           {projectsData.map((project) => (
             <ProjectCard
@@ -54,7 +45,7 @@ const Projects: React.FC = () => {
               codeLink={project.codeLink}
             />
           ))}
-        </div>
+        </motion.div>
       </div>
     </section>
   );
