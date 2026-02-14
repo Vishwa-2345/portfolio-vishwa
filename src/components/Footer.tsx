@@ -22,9 +22,8 @@ const Footer: React.FC = () => {
           </div>
 
           <div className="flex items-center gap-1 text-sm text-slate-500 dark:text-slate-400">
-            <span>&copy; {currentYear} Vishwa V. Built with</span>
-            <HiOutlineHeart size={16} className="text-rose-500 mx-1" />
-            <span>& React</span>
+            <span>&copy; {currentYear} Vishwa V</span>
+            <span></span>
           </div>
 
           <motion.button

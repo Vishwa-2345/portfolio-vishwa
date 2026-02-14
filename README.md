@@ -4,7 +4,7 @@ A modern, animated developer portfolio built with **React**, **TypeScript**, **T
 
 ## Features
 
-- **Immersive Intro Scene** — An animated "developer at work" landing page with floating tool icons, a live code monitor, build-progress steps, and a CTA button that transitions into the portfolio.
+- **Immersive Intro Scene (simplified)** — Animated particles and a short "Let's see the developer" reveal (2s) before entering the portfolio. The previous console/monitor build-step sequence has been removed for a faster, cleaner entry.
 - **Dark / Light Theme** — Toggle between themes with localStorage persistence and smooth CSS transitions.
 - **Responsive Design** — Fully adaptive layout from mobile to desktop.
 - **Smooth Animations** — Framer Motion–powered scroll reveals, staggered entries, and hover effects throughout.

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { HiOutlineMenu, HiOutlineX } from 'react-icons/hi';
 import { FiCode } from 'react-icons/fi';
@@ -14,6 +15,7 @@ const Navbar: React.FC<NavbarProps> = ({ theme }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState('');
+  const location = useLocation();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -34,6 +36,13 @@ const Navbar: React.FC<NavbarProps> = ({ theme }) => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  useEffect(() => {
+    // If the route is a project detail page, mark projects as active
+    if (location.pathname.startsWith('/projects')) {
+      setActiveSection('projects');
+    }
+  }, [location]);
 
   const scrollToSection = (id: string) => {
     setIsOpen(false);
@@ -77,7 +86,7 @@ const Navbar: React.FC<NavbarProps> = ({ theme }) => {
               <button
                 key={item}
                 onClick={() => scrollToSection(item)}
-                className={`nav-link capitalize font-display ${
+                className={`nav-link relative capitalize font-display ${
                   activeSection === item ? 'text-emerald-600 dark:text-emerald-400' : ''
                 }`}
               >
@@ -85,7 +94,7 @@ const Navbar: React.FC<NavbarProps> = ({ theme }) => {
                 {activeSection === item && (
                   <motion.div
                     layoutId="activeNav"
-                    className="absolute bottom-0 left-1/2 -translate-x-1/2 w-full h-0.5 bg-gradient-to-r from-emerald-500 to-cyan-500 rounded-full"
+                    className="absolute left-0 right-0 bottom-0 h-0.5 bg-gradient-to-r from-emerald-500 to-cyan-500 rounded-full"
                     transition={{ type: 'spring', stiffness: 300, damping: 30 }}
                   />
                 )}

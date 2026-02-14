@@ -5,6 +5,8 @@ import { projectsData } from '../data/projectsData';
 import { fadeInUp, staggerContainer } from '../utils/animations';
 
 const Projects: React.FC = () => {
+  
+
   return (
     <section id="projects" className="section-padding relative overflow-hidden">
       <div className="absolute inset-0 mesh-gradient opacity-40" />
@@ -37,11 +39,10 @@ const Projects: React.FC = () => {
           {projectsData.map((project) => (
             <ProjectCard
               key={project.id}
+              id={project.id}
               title={project.title}
               description={project.description}
               image={project.image}
-              technologies={project.technologies}
-              demoLink={project.demoLink}
               codeLink={project.codeLink}
             />
           ))}

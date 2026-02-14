@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import ProjectDetail from './components/ProjectDetail';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import About from './components/About';
@@ -54,68 +56,27 @@ const BUILD_STEPS = [
 ];
 
 const DevScene: React.FC<{ onEnter: () => void }> = ({ onEnter }) => {
-  const [currentStep, setCurrentStep] = useState(-1);
-  const [showCta, setShowCta] = useState(false);
-  const [revealing, setRevealing] = useState(false);
-  const [devCentered, setDevCentered] = useState(false);
-  const [showSentence, setShowSentence] = useState(false);
-
-  // Animate build steps one by one and auto-run the reveal sequence
+  // show only particles + sentence for 2 seconds, then enter portfolio
   useEffect(() => {
-    const timers: ReturnType<typeof setTimeout>[] = [];
-    BUILD_STEPS.forEach((step, i) => {
-      timers.push(setTimeout(() => setCurrentStep(i), step.delay * 1000));
-    });
-
-    // After the last build step, wait 2s then show the centered sentence overlay,
-    // then after 2s transition to the portfolio.
-    const afterBuildMs = (BUILD_STEPS[BUILD_STEPS.length - 1].delay + 0.4) * 1000;
-    timers.push(setTimeout(() => setShowCta(true), afterBuildMs));
-
-    // show the big centered sentence 2s after build completes
-    timers.push(setTimeout(() => {
-      setShowSentence(true);
-      // dim/hide floating particles while the sentence is visible
-      setRevealing(true);
-    }, afterBuildMs + 2000));
-
-    // enter portfolio 2s after the sentence appears
-    timers.push(setTimeout(() => onEnter(), afterBuildMs + 2000 + 2000));
-
-    return () => timers.forEach(clearTimeout);
+    const t = setTimeout(() => onEnter(), 2000);
+    return () => clearTimeout(t);
   }, [onEnter]);
 
   return (
-    <motion.div
-      className="intro-scene"
-      exit={{ opacity: 0, scale: 1.05 }}
-      transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-    >
-      {/* Background gradient orbs */}
+    <motion.div className="intro-scene relative" exit={{ opacity: 0 }} transition={{ duration: 0.6 }}>
       <div className="intro-orb intro-orb-1" />
       <div className="intro-orb intro-orb-2" />
       <div className="intro-orb intro-orb-3" />
-      <div className="intro-scanlines" />
 
-      {/* Floating tool icons around the edges */}
       <div className="intro-particles" aria-hidden>
         {FLOAT_ITEMS.map((item, i) => (
           <motion.div
             key={i}
             className="intro-float-icon"
             style={{ left: `${item.x}%`, top: `${item.y}%` }}
-            initial={{ opacity: 0, scale: 0 }}
-            animate={revealing ? { opacity: 0 } : {
-              opacity: [0, 0.7, 0.7, 0],
-              scale: [0.5, 1, 1, 0.5],
-              y: [0, -15, -15, 0],
-            }}
-            transition={{
-              duration: 6,
-              delay: i * 0.7,
-              repeat: Infinity,
-              ease: 'easeInOut',
-            }}
+            initial={{ opacity: 0, scale: 0.6 }}
+            animate={{ opacity: [0, 0.8, 0.8, 0], scale: [0.8, 1, 1, 0.8] }}
+            transition={{ duration: 4, delay: i * 0.2, repeat: Infinity, ease: 'easeInOut' }}
           >
             <span className="intro-float-emoji">{item.emoji}</span>
             <span className="intro-float-label">{item.label}</span>
@@ -123,130 +84,18 @@ const DevScene: React.FC<{ onEnter: () => void }> = ({ onEnter }) => {
         ))}
       </div>
 
-      {/* Center content */}
-      <div className="intro-center" style={{ maxWidth: 720 }}>
-        {/* Status indicator */}
-        <motion.div
-          className="intro-status"
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-        >
-          <span className="intro-status-dot" />
-          <span>a developer is crafting something...</span>
-        </motion.div>
-
-        {/* Developer workspace illustration */}
-        <motion.div
-          className="intro-workspace"
-          initial={{ opacity: 0, y: 24 }}
-          animate={revealing ? { opacity: 1 } : { opacity: 1, y: 0 }}
-          transition={{ delay: 0.2, duration: 0.6 }}
-        >
-          {/* Desk scene */}
-          <div className="intro-desk">
-            {/* Monitor */}
-            <div className="intro-monitor">
-              <div className="intro-monitor-screen">
-                {/* Code scrolling inside the monitor */}
-                <div className="intro-monitor-code">
-                  {MONITOR_LINES.map((line, i) => (
-                    <div
-                      key={i}
-                      className={`intro-monitor-line ${
-                        i === 0 ? 'intro-monitor-line-active' : ''
-                      }`}
-                    >
-                      <span className="intro-monitor-ln">{i + 1}</span>
-                      {line || '\u00A0'}
-                    </div>
-                  ))}
-                </div>
-                {/* Glow reflection */}
-                <div className="intro-monitor-glow" />
-              </div>
-              {/* Monitor stand */}
-              <div className="intro-monitor-stand" />
-              <div className="intro-monitor-base" />
-            </div>
-
-            {/* Developer figure (simplified CSS art) */}
-            <motion.div
-              className="intro-dev-figure"
-              initial={{ y: 0, scale: 1, opacity: 1 }}
-              animate={devCentered ? { y: -140, scale: 1.28, opacity: 1 } : { y: 0, scale: 1, opacity: 1 }}
-              transition={{ type: 'spring', stiffness: 160, damping: 18 }}
-              style={{ zIndex: devCentered ? 9999 : undefined }}
-            >
-              <div className="intro-dev-head" />
-              <div className="intro-dev-body" />
-              <div className="intro-dev-arm intro-dev-arm-l" />
-              <div className="intro-dev-arm intro-dev-arm-r" />
-            </motion.div>
-
-            {/* Desk surface */}
-            <div className="intro-desk-surface" />
-
-            {/* Coffee mug */}
-            <div className="intro-coffee">
-              <div className="intro-coffee-steam" />
-              ☕
-            </div>
-
-            {/* Small items on desk */}
-            <div className="intro-desk-plant">🪴</div>
-          </div>
-        </motion.div>
-
-        {/* Build progress steps */}
-        <div className="intro-build-steps">
-          {BUILD_STEPS.map((step, i) => (
-            <motion.div
-              key={i}
-              className={`intro-step ${i <= currentStep ? 'intro-step-done' : ''}`}
-              initial={{ opacity: 0, x: -12 }}
-              animate={i <= currentStep ? { opacity: 1, x: 0 } : {}}
-              transition={{ duration: 0.35, ease: 'easeOut' }}
-            >
-              <span className="intro-step-icon">{step.icon}</span>
-              <span>{step.text}</span>
-              {i <= currentStep && i < BUILD_STEPS.length - 1 && (
-                <motion.span
-                  className="intro-step-check"
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  transition={{ delay: 0.3 }}
-                >
-                  ✓
-                </motion.span>
-              )}
-            </motion.div>
-          ))}
-        </div>
-
-        {/* CTA removed — intro now auto-reveals the developer and opens portfolio */}
-      </div>
-
-      {/* Full-screen centered sentence overlay (appears after 2s, then auto-navigates) */}
       <AnimatePresence>
-        {showSentence && (
-          <motion.div
-            className="intro-sentence-overlay"
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.98 }}
-            transition={{ duration: 0.45, ease: [0.2, 0.9, 0.2, 1] }}
-          >
-            <motion.h1
-              className="intro-sentence-text"
-              initial={{ y: 12, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ delay: 0.05, duration: 0.5, type: 'spring', stiffness: 120 }}
-            >
-              Let's see the developer
-            </motion.h1>
-          </motion.div>
-        )}
+        <motion.div
+          className="absolute inset-0 flex items-center justify-center pointer-events-none"
+          initial={{ opacity: 0, scale: 0.96 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.35 }}
+        >
+          <motion.h1 className="intro-sentence-text relative z-20 text-5xl md:text-6xl lg:text-7xl font-extrabold text-white drop-shadow-lg pointer-events-none" initial={{ y: 8, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.3 }}>
+            Let's see the developer
+          </motion.h1>
+        </motion.div>
       </AnimatePresence>
     </motion.div>
   );
@@ -310,18 +159,28 @@ function App(): React.JSX.Element {
             transition={{ duration: 0.1 }}
           />
 
-          <Navbar theme={theme} />
-          <ThemeToggle theme={theme} toggleTheme={toggleTheme} />
+          <BrowserRouter>
+            <Navbar theme={theme} />
+            <ThemeToggle theme={theme} toggleTheme={toggleTheme} />
 
-          <main>
-            <Hero />
-            <About />
-            <Skills />
-            <Projects />
-            <Contact />
-          </main>
+            <Routes>
+              <Route
+                path="/"
+                element={
+                  <main>
+                    <Hero />
+                    <About />
+                    <Skills />
+                    <Projects />
+                    <Contact />
+                  </main>
+                }
+              />
+              <Route path="/projects/:id" element={<ProjectDetail />} />
+            </Routes>
 
-          <Footer />
+            <Footer />
+          </BrowserRouter>
         </motion.div>
       )}
     </>

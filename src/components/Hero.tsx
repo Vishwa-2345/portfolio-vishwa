@@ -28,7 +28,7 @@ const Hero: React.FC = () => {
 
   useEffect(() => {
     const currentRole = roles[roleIndex];
-    let timeout: NodeJS.Timeout;
+    let timeout: number | undefined;
     if (!isDeleting && displayText === currentRole) {
       timeout = setTimeout(() => setIsDeleting(true), 2000);
     } else if (isDeleting && displayText === '') {
@@ -43,7 +43,7 @@ const Hero: React.FC = () => {
         );
       }, isDeleting ? 40 : 80);
     }
-    return () => clearTimeout(timeout);
+    return () => { if (timeout) clearTimeout(timeout); };
   }, [displayText, isDeleting, roleIndex]);
 
   const scrollToAbout = () => {
@@ -65,15 +65,7 @@ const Hero: React.FC = () => {
       />
 
       <motion.div style={{ opacity: heroOpacity }} className="container-custom relative z-10 text-center">
-        <motion.div variants={heroTextReveal} initial="hidden" animate="visible" custom={0} className="mb-6">
-          <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass text-sm font-medium text-slate-600 dark:text-slate-300">
-            <span className="relative flex h-2.5 w-2.5">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
-            </span>
-            Available for opportunities
-          </span>
-        </motion.div>
+        {/* Availability badge removed per request */}
 
         <motion.h1
           variants={heroTextReveal}

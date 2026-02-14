@@ -2,10 +2,10 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import { fadeInUp, slideInLeft, slideInRight } from '../utils/animations';
-import { HiOutlineArrowDown } from 'react-icons/hi';
+// removed resume download icon import (button removed)
 
 const About: React.FC = () => {
-  const [ref, inView] = useInView({ triggerOnce: true, threshold: 0.1 });
+  const [ref] = useInView({ triggerOnce: true, threshold: 0.1 });
 
   return (
     <section id="about" className="section-padding relative overflow-hidden">
@@ -48,7 +48,7 @@ const About: React.FC = () => {
                 {/* Image wrapper — uses aspect-ratio so ANY image fits without distortion */}
                 <div className="relative w-full aspect-[3/4] bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-800 dark:to-slate-900">
                   <img
-                    src="./profile.jpg"
+                    src="./Profile2.png"
                     alt="Vishwa V"
                     className="absolute inset-0 w-full h-full object-cover object-top"
                     loading="lazy"
@@ -63,11 +63,7 @@ const About: React.FC = () => {
                   />
                 </div>
 
-                {/* Name strip at bottom */}
-                <div className="px-4 py-3 text-center border-t border-slate-200/60 dark:border-slate-700/40">
-                  <p className="text-lg font-semibold text-slate-800 dark:text-white">Vishwa V</p>
-                  <p className="text-xs text-slate-500 dark:text-slate-400 tracking-wide">Full Stack Developer</p>
-                </div>
+                {/* Name strip removed — only image shown as requested */}
               </div>
             </div>
           </motion.div>
@@ -86,26 +82,17 @@ const About: React.FC = () => {
             </h3>
 
             <p className="text-slate-600 dark:text-slate-400 leading-relaxed text-lg mb-4">
-              I'm a full stack developer with a deep passion for building things on the web. My journey started with HTML, CSS, and JavaScript — and I was instantly hooked by the thrill of bringing ideas to life in the browser.
+              I’m a Full Stack Developer who loves building complete, real-world systems — not just websites.I enjoy turning ideas into structured, scalable solutions.
+            </p>
+            <p className="text-slate-600 dark:text-slate-400 leading-relaxed text-lg mb-4">
+              I started with HTML, CSS, and JavaScript, but quickly moved into building full-stack applications using React, Node.js, and modern backend architectures. I focus on clean UI, strong system design, and practical problem-solving.
             </p>
             <p className="text-slate-600 dark:text-slate-400 leading-relaxed text-lg mb-8">
-              Over time, React and Node.js became my go-to tools for creating scalable, user-centric applications. I love collaborating on ambitious projects, experimenting with modern tech, and writing clean code that makes a difference. Feel free to connect if you want to build something awesome together!
+              I enjoy building products that are not only functional but meaningful — tools that improve workflows, automate processes, and create impact. I’m constantly learning, experimenting with new technologies, and pushing myself to build better systems every day. 
+              If you’re building something ambitious — let’s make it happen.
             </p>
 
-            <div className="flex flex-col gap-3">
-              <motion.a
-                href="/resume.pdf"
-                target="_blank"
-                variants={fadeInUp}
-                initial="hidden"
-                animate={inView ? 'visible' : 'hidden'}
-                custom={0.6}
-                className="inline-flex items-center gap-4 px-6 py-4 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-medium transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-emerald-500/25 w-fit"
-              >
-                <HiOutlineArrowDown size={22} />
-                <span>Download Resume</span>
-              </motion.a>
-            </div>
+            {/* Resume download removed per request */}
           </motion.div>
         </div>
       </div>
