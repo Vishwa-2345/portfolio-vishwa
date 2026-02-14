@@ -1,20 +1,35 @@
 import React, { useState, useEffect } from 'react';
-import { Menu, X } from 'lucide-react';
+import { useLocation } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
+import { HiOutlineMenu, HiOutlineX } from 'react-icons/hi';
+import { FiCode } from 'react-icons/fi';
+import { navVariants } from '../utils/animations';
 
 interface NavbarProps {
   theme: string;
 }
 
+const navItems = ['about', 'skills', 'projects', 'contact'];
+
 const Navbar: React.FC<NavbarProps> = ({ theme }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [activeSection, setActiveSection] = useState('');
+  const location = useLocation();
 
   useEffect(() => {
     const handleScroll = () => {
-      if (window.scrollY > 60) {
-        setIsScrolled(true);
-      } else {
-        setIsScrolled(false);
+      setIsScrolled(window.scrollY > 50);
+
+      const sections = navItems.map(id => document.getElementById(id));
+      const scrollPos = window.scrollY + 100;
+
+      for (let i = sections.length - 1; i >= 0; i--) {
+        const section = sections[i];
+        if (section && section.offsetTop <= scrollPos) {
+          setActiveSection(navItems[i]);
+          break;
+        }
       }
     };
 
@@ -22,115 +37,107 @@ const Navbar: React.FC<NavbarProps> = ({ theme }) => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  useEffect(() => {
+    // If the route is a project detail page, mark projects as active
+    if (location.pathname.startsWith('/projects')) {
+      setActiveSection('projects');
+    }
+  }, [location]);
+
   const scrollToSection = (id: string) => {
     setIsOpen(false);
     const element = document.getElementById(id);
     if (element) {
       const offset = 80;
-      const bodyRect = document.body.getBoundingClientRect().top;
-      const elementRect = element.getBoundingClientRect().top;
-      const elementPosition = elementRect - bodyRect;
-      const offsetPosition = elementPosition - offset;
-
-      window.scrollTo({
-        top: offsetPosition,
-        behavior: 'smooth'
-      });
+      const top = element.getBoundingClientRect().top + window.scrollY - offset;
+      window.scrollTo({ top, behavior: 'smooth' });
     }
   };
 
   return (
-    <nav className={`fixed top-0 left-0 w-full z-40 transition-all duration-300 ${
-      isScrolled 
-        ? `${theme === 'dark' 
-            ? 'bg-gray-900/90 backdrop-blur-md border-b border-gray-800' 
-            : 'bg-white/90 backdrop-blur-md border-b border-gray-200'}`
-        : 'bg-transparent'
-    }`}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
-          <div className="flex items-center">
-            <a 
-              href="#hero" 
-              className={`text-xl font-extrabold ${
-                theme === 'dark' ? 'text-white' : 'text-gray-900'
-              }`}
-              onClick={(e) => {
-                e.preventDefault();
-                scrollToSection('hero');
-              }}
-            >
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600">
-                Vishwa V
-              </span>
-            </a>
-          </div>
-          
-          <div className="hidden md:block">
-            <div className="ml-10 flex items-baseline space-x-4">
-              {['about', 'skills', 'projects', 'contact'].map((item) => (
-                <a
-                  key={item}
-                  href={`#${item}`}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    scrollToSection(item);
-                  }}
-                  className={`px-3 py-2 rounded-md text-sm font-medium capitalize ${
-                    theme === 'dark'
-                      ? 'text-gray-300 hover:text-white hover:bg-gray-800'
-                      : 'text-gray-700 hover:text-gray-900 hover:bg-gray-200'
-                  } transition-all duration-200`}
-                >
-                  {item}
-                </a>
-              ))}
+    <motion.nav
+      variants={navVariants}
+      initial="hidden"
+      animate="visible"
+      className={`fixed top-0 left-0 w-full z-40 transition-all duration-500 ${
+        isScrolled
+          ? 'glass shadow-lg shadow-slate-200/20 dark:shadow-black/20'
+          : 'bg-transparent'
+      }`}
+    >
+      <div className="container-custom">
+        <div className="flex items-center justify-between h-16 md:h-20">
+          <motion.a
+            href="#hero"
+            onClick={(e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+            className="flex items-center gap-2 group"
+            whileHover={{ scale: 1.05 }}
+          >
+            <div className="w-10 h-10 rounded-xl bg-white dark:bg-slate-800 flex items-center justify-center border-2 border-emerald-500/20 shadow-sm overflow-hidden p-1.5">
+              <img src="/laptop-icon.svg" alt="Logo" className="w-full h-full object-contain" />
             </div>
+            <span className="text-lg font-display font-bold text-slate-900 dark:text-white">
+              Vishwa<span className="gradient-text">.</span>
+            </span>
+          </motion.a>
+
+          <div className="hidden md:flex items-center gap-1">
+            {navItems.map((item) => (
+              <button
+                key={item}
+                onClick={() => scrollToSection(item)}
+                className={`nav-link relative capitalize font-display ${
+                  activeSection === item ? 'text-emerald-600 dark:text-emerald-400' : ''
+                }`}
+              >
+                {item}
+                {activeSection === item && (
+                  <motion.div
+                    layoutId="activeNav"
+                    className="absolute left-0 right-0 bottom-0 h-0.5 bg-gradient-to-r from-emerald-500 to-cyan-500 rounded-full"
+                    transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+                  />
+                )}
+              </button>
+            ))}
           </div>
-          
-          <div className="md:hidden">
-            <button
-              onClick={() => setIsOpen(!isOpen)}
-              className={`inline-flex items-center justify-center p-2 rounded-md ${
-                theme === 'dark'
-                  ? 'text-gray-400 hover:text-white hover:bg-gray-700'
-                  : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100'
-              } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white`}
-            >
-              <span className="sr-only">Open main menu</span>
-              {isOpen ? <X size={24} /> : <Menu size={24} />}
-            </button>
-          </div>
+
+          <button
+            onClick={() => setIsOpen(!isOpen)}
+            className="md:hidden w-10 h-10 rounded-xl glass flex items-center justify-center"
+          >
+            {isOpen ? <HiOutlineX size={20} /> : <HiOutlineMenu size={20} />}
+          </button>
         </div>
       </div>
 
-      {/* Mobile menu */}
-      <div
-        className={`md:hidden transition-all duration-300 ease-in-out transform ${
-          isOpen ? 'opacity-100 max-h-64' : 'opacity-0 max-h-0 invisible'
-        }`}
-      >
-        <div className={`px-2 pt-2 pb-3 space-y-1 sm:px-3 ${theme === 'dark' ? 'bg-gray-900' : 'bg-white'}`}>
-          {['about', 'skills', 'projects', 'contact'].map((item) => (
-            <a
-              key={item}
-              href={`#${item}`}
-              onClick={(e) => {
-                e.preventDefault();
-                scrollToSection(item);
-              }}
-              className={`block px-3 py-2 rounded-md text-base font-medium capitalize ${
-                theme === 'dark'
-                  ? 'text-gray-300 hover:text-white hover:bg-gray-700'
-                  : 'text-gray-700 hover:text-gray-900 hover:bg-gray-100'
-              }`}
-            >
-              {item}
-            </a>
-          ))}
-        </div>
-      </div>
-    </nav>
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.3 }}
+            className="md:hidden overflow-hidden glass border-t border-slate-200/50 dark:border-slate-700/50"
+          >
+            <div className="container-custom py-4 space-y-1">
+              {navItems.map((item, index) => (
+                <motion.button
+                  key={item}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: index * 0.05 }}
+                  onClick={() => scrollToSection(item)}
+                  className="block w-full text-left px-4 py-3 rounded-xl capitalize font-display text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800/50 transition-colors"
+                >
+                  {item}
+                </motion.button>
+              ))}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.nav>
   );
 };
 

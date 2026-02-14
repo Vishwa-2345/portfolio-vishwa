@@ -1,77 +1,142 @@
-import React, { useEffect, useRef } from 'react';
-import { ChevronDown } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { motion, useScroll, useTransform } from 'framer-motion';
+import { HiOutlineChevronDown } from 'react-icons/hi';
+import { heroTextReveal } from '../utils/animations';
+
+const roles = ['Full Stack Developer', 'UI/UX Enthusiast', 'Problem Solver', 'Tech Explorer'];
+
+const FloatingOrb: React.FC<{ size: string; color: string; delay: number; position: string }> = ({
+  size, color, delay, position,
+}) => (
+  <motion.div
+    className={`absolute ${position} ${size} rounded-full blur-3xl opacity-20 dark:opacity-15 pointer-events-none`}
+    style={{ background: color }}
+    animate={{ y: [0, -25, 0], x: [0, 12, 0], scale: [1, 1.08, 1] }}
+    transition={{ duration: 10, delay, repeat: Infinity, ease: 'easeInOut' }}
+  />
+);
 
 const Hero: React.FC = () => {
-  const heroRef = useRef<HTMLDivElement>(null);
+  const [roleIndex, setRoleIndex] = useState(0);
+  const [displayText, setDisplayText] = useState('');
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  const { scrollY } = useScroll();
+  const y1 = useTransform(scrollY, [0, 500], [0, -100]);
+  const y2 = useTransform(scrollY, [0, 500], [0, -50]);
+  const heroOpacity = useTransform(scrollY, [0, 400], [1, 0]);
 
   useEffect(() => {
-    const handleScroll = () => {
-      if (heroRef.current) {
-        const scrollPos = window.scrollY;
-        const opacity = Math.max(1 - scrollPos / 700, 0);
-        const translateY = scrollPos * 0.4;
-        heroRef.current.style.opacity = opacity.toString();
-        heroRef.current.style.transform = `translateY(${translateY}px)`;
-      }
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+    const currentRole = roles[roleIndex];
+    let timeout: number | undefined;
+    if (!isDeleting && displayText === currentRole) {
+      timeout = setTimeout(() => setIsDeleting(true), 2000);
+    } else if (isDeleting && displayText === '') {
+      setIsDeleting(false);
+      setRoleIndex((prev) => (prev + 1) % roles.length);
+    } else {
+      timeout = setTimeout(() => {
+        setDisplayText(
+          isDeleting
+            ? currentRole.substring(0, displayText.length - 1)
+            : currentRole.substring(0, displayText.length + 1)
+        );
+      }, isDeleting ? 40 : 80);
+    }
+    return () => { if (timeout) clearTimeout(timeout); };
+  }, [displayText, isDeleting, roleIndex]);
 
   const scrollToAbout = () => {
-    const aboutSection = document.getElementById('about');
-    if (aboutSection) {
-      aboutSection.scrollIntoView({ behavior: 'smooth' });
-    }
+    document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' });
   };
 
   return (
-    <section 
-      id="hero" 
-      className="relative min-h-screen flex items-center justify-center overflow-hidden"
-    >
-      <div className="absolute inset-0 z-0">
-        <div className="absolute inset-0 bg-gradient-to-r from-purple-900/40 to-pink-900/40 dark:from-purple-900/60 dark:to-pink-900/60 mix-blend-multiply"></div>
-        <div className="absolute inset-0 bg-[url('C:\Users\God\Downloads\1000062569.webp ?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260')] bg-cover bg-center bg-no-repeat"></div>
-      </div>
+    <section id="hero" className="relative min-h-screen flex items-center justify-center overflow-hidden">
+      <motion.div className="absolute inset-0 mesh-gradient" style={{ y: y1 }} />
 
-      <div 
-        ref={heroRef}
-        className="container mx-auto px-4 sm:px-6 lg:px-8 z-10 text-center transition-all duration-300"
-      >
-        <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6 text-white drop-shadow-lg">
-          <span className="block">Hi, I'm</span>
-          <span className="block mt-2 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600">
-            VISHWA V
+      <FloatingOrb size="w-96 h-96" color="rgba(16, 185, 129, 0.3)" delay={0} position="top-10 -left-48" />
+      <FloatingOrb size="w-80 h-80" color="rgba(6, 182, 212, 0.25)" delay={2} position="top-1/3 -right-40" />
+      <FloatingOrb size="w-64 h-64" color="rgba(245, 158, 11, 0.15)" delay={4} position="bottom-20 left-1/4" />
+      <FloatingOrb size="w-72 h-72" color="rgba(16, 185, 129, 0.2)" delay={3} position="-bottom-20 right-1/4" />
+
+      <motion.div
+        className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_20%,rgba(250,250,248,0.85)_80%)] dark:bg-[radial-gradient(circle_at_center,transparent_20%,rgba(11,15,26,0.85)_80%)]"
+        style={{ y: y2 }}
+      />
+
+      <motion.div style={{ opacity: heroOpacity }} className="container-custom relative z-10 text-center">
+        {/* Availability badge removed per request */}
+
+        <motion.h1
+          variants={heroTextReveal}
+          initial="hidden"
+          animate="visible"
+          custom={0.2}
+          className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-display font-bold tracking-tight mb-6"
+        >
+          <span className="text-slate-900 dark:text-white">Hi, I'm </span>
+          <span className="gradient-text">Vishwa</span>
+        </motion.h1>
+
+        <motion.div
+          variants={heroTextReveal}
+          initial="hidden"
+          animate="visible"
+          custom={0.4}
+          className="h-12 md:h-14 flex items-center justify-center mb-8"
+        >
+          <span className="text-xl sm:text-2xl md:text-3xl font-display font-medium text-slate-600 dark:text-slate-400">
+            {displayText}
+            <motion.span
+              animate={{ opacity: [1, 0] }}
+              transition={{ duration: 0.5, repeat: Infinity }}
+              className="inline-block w-0.5 h-7 md:h-8 ml-1 bg-emerald-500 align-middle"
+            />
           </span>
-        </h1>
-        <p className="text-xl sm:text-2xl md:text-3xl max-w-2xl mx-auto text-white/90 mb-10 drop-shadow-md">
-        Front-End-Web-Developer
-        </p>
-        <div className="flex flex-wrap justify-center gap-4">
-          <button 
-            onClick={() => document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' })}
-            className="px-8 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-medium rounded-full transition-all duration-300 transform hover:scale-105 hover:shadow-lg"
-          >
-            View Projects
-          </button>
-          <button 
-            onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
-            className="px-8 py-3 bg-transparent border-2 border-white text-white font-medium rounded-full transition-all duration-300 transform hover:scale-105 hover:bg-white/10 hover:shadow-lg"
-          >
-            Contact Me
-          </button>
-        </div>
-      </div>
+        </motion.div>
 
-      <button 
+        <motion.p
+          variants={heroTextReveal}
+          initial="hidden"
+          animate="visible"
+          custom={0.6}
+          className="text-lg md:text-xl max-w-2xl mx-auto text-slate-500 dark:text-slate-400 mb-12 text-balance leading-relaxed"
+        >
+          I craft modern, performant web applications with clean code and
+          pixel-perfect designs that deliver exceptional user experiences.
+        </motion.p>
+
+        <motion.div
+          variants={heroTextReveal}
+          initial="hidden"
+          animate="visible"
+          custom={0.8}
+          className="flex flex-wrap justify-center gap-4"
+        >
+          <button
+            onClick={() => document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' })}
+            className="btn-primary font-display"
+          >
+            View My Work
+          </button>
+          <button
+            onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
+            className="btn-secondary font-display"
+          >
+            Get In Touch
+          </button>
+        </motion.div>
+      </motion.div>
+
+      <motion.button
         onClick={scrollToAbout}
-        className="absolute bottom-10 left-1/2 transform -translate-x-1/2 text-white animate-bounce"
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 text-slate-400 dark:text-slate-500"
+        animate={{ y: [0, 8, 0] }}
+        transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
         aria-label="Scroll down"
       >
-        <ChevronDown size={32} />
-      </button>
+        <HiOutlineChevronDown size={28} />
+      </motion.button>
     </section>
   );
 };

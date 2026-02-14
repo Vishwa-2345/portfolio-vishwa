@@ -1,47 +1,38 @@
+import project1Img from '../assets/project1.png';
+import project2Img from '../assets/project2.png';
+import project3Img from '../assets/Project-3.png';
+import project4Img from '../assets/Project4.png';
 export const projectsData = [
   {
     id: 1,
-    title: 'E-commerce Platform',
-    description: 'A full-featured e-commerce solution with product management, cart functionality, and payment processing.',
-    image: 'https://images.pexels.com/photos/230544/pexels-photo-230544.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260',
-    technologies: ['React', 'Node.js', 'MongoDB', 'Stripe'],
-    demoLink: '#',
-    codeLink: '#'
+    title: 'AI-Powered Student Stress Detection System',
+    description: 'An AI-driven system designed to detect student stress levels using forum activity analysis and real-time facial emotion recognition. The platform analyzes behavioral patterns to provide early insights into student wellbeing. This project was developed during a hackathon and won recognition at a Google & GeeksforGeeks event conducted at the college level.',
+    image: project1Img,
+    technologies: ['React', 'FastAPI', 'MongoDB', 'Machine Learning','OpenCV'],
+    codeLink: 'https://github.com/Vishwa-2345/stress-detecting'
   },
   {
     id: 2,
-    title: 'Task Management App',
-    description: 'A productivity application to help users organize tasks, set deadlines, and track progress.',
-    image: 'https://images.pexels.com/photos/1029757/pexels-photo-1029757.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260',
-    technologies: ['React', 'Firebase', 'Tailwind CSS'],
-    demoLink: '#',
-    codeLink: '#'
+    title: 'AI Mentor Platform',
+    description: 'A full-stack AI-powered mentoring platform that provides personalized career guidance, resume analysis, learning path recommendations, and interview preparation support. Built with secure authentication and a scalable architecture, the platform delivers an interactive and intelligent user experience tailored to individual goals.',
+    image: project2Img,
+    technologies: ['React', 'TypeScript','Node.js','MongoDB','JWT', 'Tailwind CSS'],
+    codeLink: 'https://github.com/JoysonStanly/new-ai-mentor'
   },
   {
     id: 3,
-    title: 'Weather Forecast Dashboard',
-    description: 'An interactive weather application providing real-time forecasts and historical data visualization.',
-    image: 'https://images.pexels.com/photos/1118873/pexels-photo-1118873.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260',
-    technologies: ['JavaScript', 'Chart.js', 'Weather API'],
-    demoLink: '#',
-    codeLink: '#'
+    title: 'ATOM Club Platform',
+    description: 'A fully deployed, production-ready web platform built for ATOM Club, featuring a modern public website and a secure admin CMS. The system allows dynamic event management, gallery updates, coordinator profiles, and sub-club showcases with full CRUD functionality and image uploads. Designed with responsive UI, smooth animations, and optimized performance, it delivers a scalable and professional digital presence for the club.',
+    image: project3Img,
+    technologies: ['React','TypeScript','Tailwind CSS','Framer Motion','Firebase'],
+    codeLink: 'https://github.com/dot-Dev-Club/Atom_Standalone'
   },
   {
     id: 4,
-    title: 'Social Media Platform',
-    description: 'A community platform with user profiles, real-time messaging, and content sharing capabilities.',
-    image: 'https://images.pexels.com/photos/1279813/pexels-photo-1279813.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260',
-    technologies: ['React', 'Socket.io', 'Express', 'MongoDB'],
-    demoLink: '#',
-    codeLink: '#'
-  },
-  {
-    id: 5,
-    title: 'Fitness Tracking App',
-    description: 'A health application for tracking workouts, nutrition, and progress with detailed analytics.',
-    image: 'https://images.pexels.com/photos/841130/pexels-photo-841130.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260',
-    technologies: ['React Native', 'GraphQL', 'Node.js'],
-    demoLink: '#',
-    codeLink: '#'
+    title: 'Club Attendance Management System',
+    description: 'A full-stack multi-club attendance management platform with role-based dashboards for admins and tutors. It supports session creation, time-window-based attendance marking, student management, performance analytics, and automated Google Sheets synchronization for structured reporting and data reliability.',
+    image: project4Img,
+    technologies: ['React','TypeScript','Tailwind CSS','FastAPI','SQLAlchemy','SQLite','Google Sheets API'],
+    codeLink: 'https://github.com/dot-Dev-Club/Club-Attendance'
   }
 ];

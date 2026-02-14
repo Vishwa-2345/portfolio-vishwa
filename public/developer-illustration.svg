@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 400" fill="none">
+  <!-- Desk -->
+  <rect x="50" y="300" width="400" height="20" rx="4" fill="#334155" />
+  <rect x="80" y="320" width="20" height="80" fill="#334155" />
+  <rect x="400" y="320" width="20" height="80" fill="#334155" />
+
+  <!-- Chair Back -->
+  <path d="M180 180 H 250 V 300 H 180 Z" fill="#1e293b" />
+  <!-- Person Body -->
+  <path d="M200 300 L 200 220 C 200 200, 240 200, 240 220 L 240 300" fill="#64748b" />
+  <!-- Person Head -->
+  <circle cx="220" cy="190" r="25" fill="#f8fafc" />
+  <!-- Person Arms -->
+  <path d="M210 230 L 190 270 L 230 290" stroke="#64748b" stroke-width="12" stroke-linecap="round" />
+  <path d="M230 230 L 270 270 L 250 290" stroke="#64748b" stroke-width="12" stroke-linecap="round" />
+
+  <!-- Laptop -->
+  <path d="M220 290 L 320 290 L 310 260 L 230 260 Z" fill="#94a3b8" /> <!-- Base -->
+  <path d="M230 260 L 230 200 L 310 200 L 310 260 Z" fill="#0f172a" /> <!-- Screen -->
+  <rect x="235" y="205" width="70" height="50" fill="#22d3ee" opacity="0.8" /> <!-- Glow -->
+  
+  <!-- Code Lines on Screen -->
+  <line x1="240" y1="215" x2="280" y2="215" stroke="#fff" stroke-width="2" opacity="0.5" />
+  <line x1="240" y1="225" x2="270" y2="225" stroke="#fff" stroke-width="2" opacity="0.5" />
+  <line x1="240" y1="235" x2="290" y2="235" stroke="#fff" stroke-width="2" opacity="0.5" />
+
+  <!-- Coffee Cup -->
+  <path d="M350 290 L 350 270 L 370 270 L 370 290 Z" fill="#d97706" />
+  <path d="M370 275 C 380 275, 380 285, 370 285" stroke="#d97706" stroke-width="2" fill="none" />
+  
+  <!-- Stylized Background Circle -->
+  <circle cx="250" cy="200" r="150" fill="url(#bgGradient)" opacity="0.1" />
+  
+  <defs>
+    <linearGradient id="bgGradient" x1="100" y1="50" x2="400" y2="350" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#34d399" />
+      <stop offset="1" stop-color="#3b82f6" />
+    </linearGradient>
+  </defs>
+</svg>
