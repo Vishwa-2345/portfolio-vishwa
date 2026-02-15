@@ -1,7 +1,7 @@
 import project1Img from '../assets/project1.png';
 import project2Img from '../assets/project2.png';
 import project3Img from '../assets/Project-3.png';
-import project4Img from '../assets/Project4.png';
+import project4Img from '../assets/project4.png';
 export const projectsData = [
   {
     id: 1,
