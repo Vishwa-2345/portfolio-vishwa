@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import emailjs from '@emailjs/browser';
 import { fadeInUp, slideInLeft, slideInRight } from '../utils/animations';
@@ -6,7 +6,16 @@ import { SiGithub, SiLinkedin } from 'react-icons/si';
 import { HiOutlineMail } from 'react-icons/hi';
 import { FiSend, FiCheck, FiLoader } from 'react-icons/fi';
 
-const contactInfo = [
+/* ─── Contact link data ─── */
+interface ContactItem {
+  icon: React.ComponentType<{ size: number; className?: string }>;
+  label: string;
+  value: string;
+  url: string;
+  color: string;
+}
+
+const contactInfo: ContactItem[] = [
   {
     icon: SiGithub,
     label: 'GitHub',
@@ -24,36 +33,78 @@ const contactInfo = [
   {
     icon: HiOutlineMail,
     label: 'Email',
-    value: 'pvvishwapvvishwa@gmail.com',
-    url: 'mailto:pvvishwapvvishwa@gmail.com',
+    value: 'vishwav.main@gmail.com',
+    url: 'mailto:vishwav.main@gmail.com',
     color: 'bg-rose-500',
   },
 ];
 
+/* ─── EmailJS helpers ─── */
+const isConfigured = (value: string): boolean =>
+  Boolean(value) && !/^(your[_-]|placeholder[_-])/i.test(value) && !/xxx/i.test(value);
+
+const EMAILJS_SERVICE = import.meta.env.VITE_EMAILJS_SERVICE as string;
+const EMAILJS_TEMPLATE = import.meta.env.VITE_EMAILJS_TEMPLATE as string;
+const EMAILJS_PUBLIC = import.meta.env.VITE_EMAILJS_PUBLIC as string;
+
+const EMAILJS_CONFIGURED =
+  isConfigured(EMAILJS_SERVICE) &&
+  isConfigured(EMAILJS_TEMPLATE) &&
+  isConfigured(EMAILJS_PUBLIC);
+
+const getEmailJSErrorText = (error: unknown): string => {
+  if (error && typeof error === 'object' && 'text' in error && typeof (error as { text: unknown }).text === 'string') {
+    return (error as { text: string }).text;
+  }
+  if (error instanceof Error) return error.message;
+  return String(error);
+};
+
+/* ─── Contact Card ─── */
+const ContactCard: React.FC<{ item: ContactItem; index: number }> = ({ item, index }) => {
+  const inner = (
+    <>
+      <div className={`w-14 h-14 rounded-full ${item.color} flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform`}>
+        <item.icon size={26} className="text-white" />
+      </div>
+      <div className="w-full">
+        <p className="font-display font-bold text-slate-800 dark:text-white text-lg mb-1">{item.label}</p>
+        <p className="text-sm text-slate-500 dark:text-slate-400 font-medium break-all">{item.value}</p>
+      </div>
+    </>
+  );
+
+  const cardClass =
+    'glass-card p-6 flex flex-col items-center justify-center gap-4 text-center group hover:-translate-y-1 transition-all duration-300 cursor-pointer h-full min-h-[160px]';
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, x: 30 }}
+      whileInView={{ opacity: 1, x: 0 }}
+      viewport={{ once: true }}
+      transition={{ delay: 0.15 + index * 0.08, duration: 0.4 }}
+    >
+      <a
+        href={item.url}
+        target={item.label !== 'Email' ? '_blank' : undefined}
+        rel="noopener noreferrer"
+        className={cardClass}
+      >
+        {inner}
+      </a>
+    </motion.div>
+  );
+};
+
+/* ─── Main Contact Section ─── */
 const Contact: React.FC = () => {
-  const formRef = useRef<HTMLFormElement>(null);
   const [formState, setFormState] = useState({ name: '', email: '', subject: '', message: '' });
   const [status, setStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle');
   const [errorMessage, setErrorMessage] = useState('');
 
-  // Read EmailJS configuration from Vite env vars. Set these in a .env file at project root:
-  // VITE_EMAILJS_SERVICE=service_xxx
-  // VITE_EMAILJS_TEMPLATE=template_xxx
-  // VITE_EMAILJS_PUBLIC=your_public_key
-  const EMAILJS_SERVICE = import.meta.env.VITE_EMAILJS_SERVICE as string | undefined;
-  const EMAILJS_TEMPLATE = import.meta.env.VITE_EMAILJS_TEMPLATE as string | undefined;
-  const EMAILJS_PUBLIC = import.meta.env.VITE_EMAILJS_PUBLIC as string | undefined;
-
   useEffect(() => {
-    if (EMAILJS_PUBLIC) {
-      try {
-        // initialize EmailJS client for extra safety
-        // this is optional if you pass public key to send(), but init helps with clear errors
-        // @ts-ignore
-        emailjs.init(EMAILJS_PUBLIC);
-      } catch (e) {
-        console.warn('EmailJS init warning:', e);
-      }
+    if (EMAILJS_CONFIGURED) {
+      emailjs.init(EMAILJS_PUBLIC);
     }
   }, []);
 
@@ -63,76 +114,38 @@ const Contact: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!EMAILJS_CONFIGURED) {
+      console.error('EmailJS is not configured.');
+      setStatus('error');
+      setErrorMessage('Email delivery is not configured yet. Please use the direct email link below.');
+      return;
+    }
+
     setStatus('sending');
     setErrorMessage('');
 
-    const params = {
-      from_name: formState.name,
-      from_email: formState.email,
-      subject: formState.subject,
-      message: formState.message,
-      to_name: 'Vishwa',
-    };
-
-    const canUseEmailJS = !!EMAILJS_SERVICE && !!EMAILJS_TEMPLATE && !!EMAILJS_PUBLIC && !EMAILJS_PUBLIC.includes('YOUR');
-
-    // Try EmailJS first if configured
-    if (canUseEmailJS) {
-      try {
-        // @ts-ignore
-        const res = await emailjs.send(EMAILJS_SERVICE, EMAILJS_TEMPLATE, params, EMAILJS_PUBLIC);
-        // EmailJS returns an object on success
-        setStatus('success');
-        setFormState({ name: '', email: '', subject: '', message: '' });
-        return;
-      } catch (err: any) {
-        console.error('EmailJS error:', err);
-        const text = (err && (err.text || err.message)) || String(err);
-        if (/Public Key is invalid/i.test(text) || /public key/i.test(text)) {
-          setErrorMessage('EmailJS public key is invalid. Please set VITE_EMAILJS_PUBLIC in .env and restart dev server.');
-        } else if (/400/i.test(text) || /bad request/i.test(text)) {
-          setErrorMessage('EmailJS returned a bad request. Check service/template IDs.');
-        } else {
-          setErrorMessage('EmailJS failed — falling back to alternate send method.');
-        }
-        // continue to fallback below
-      }
-    } else {
-      setErrorMessage('EmailJS is not configured. Using fallback method.');
-    }
-
-    // Fallback: try formsubmit.co
     try {
-      const res = await fetch('https://formsubmit.co/ajax/pvvishwapvvishwa@gmail.com', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Accept: 'application/json',
-        },
-        body: JSON.stringify({
-          name: formState.name,
-          email: formState.email,
-          subject: formState.subject,
-          message: formState.message,
-          _subject: `New Portfolio Message: ${formState.subject}`,
-          _template: 'table',
-          _captcha: 'false',
-          _autoresponse: 'Thank you for your message! I will get back to you soon.',
-        }),
+      await emailjs.send(EMAILJS_SERVICE, EMAILJS_TEMPLATE, {
+        name: formState.name,
+        email: formState.email,
+        subject: formState.subject,
+        message: formState.message,
+        reply_to: formState.email,
       });
-
-      if (res.ok) {
-        setStatus('success');
-        setFormState({ name: '', email: '', subject: '', message: '' });
-        return;
+      setStatus('success');
+      setFormState({ name: '', email: '', subject: '', message: '' });
+    } catch (err) {
+      console.error('EmailJS error:', err);
+      const text = getEmailJSErrorText(err).toLowerCase();
+      if (text.includes('public key')) {
+        setErrorMessage('EmailJS public key is invalid. Check VITE_EMAILJS_PUBLIC in .env.');
+      } else if (text.includes('service') || text.includes('template') || text.includes('400') || text.includes('bad request')) {
+        setErrorMessage('EmailJS could not send the message. Check the service and template IDs in .env.');
+      } else {
+        setErrorMessage('Could not send your message right now. Please try again or email me directly.');
       }
-      throw new Error('Formsubmit failed');
-    } catch (innerErr) {
-      console.error('Fallback error:', innerErr);
-      // Final fallback: offer mailto link
       setStatus('error');
-      setErrorMessage((prev) => prev ? prev + ' Please send an email manually.' : 'Could not send automatically. Please send an email manually.');
-      return;
     }
   };
 
@@ -141,6 +154,7 @@ const Contact: React.FC = () => {
       <div className="absolute inset-0 mesh-gradient opacity-30" />
 
       <div className="container-custom relative z-10">
+        {/* ── Heading ── */}
         <motion.div
           variants={fadeInUp}
           initial="hidden"
@@ -159,7 +173,7 @@ const Contact: React.FC = () => {
         </motion.div>
 
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-10">
-          {/* ── Form ── */}
+          {/* ── Contact Form ── */}
           <motion.div
             variants={slideInLeft}
             initial="hidden"
@@ -181,7 +195,7 @@ const Contact: React.FC = () => {
                 </div>
               </div>
 
-              <form ref={formRef} onSubmit={handleSubmit} className="space-y-5">
+              <form onSubmit={handleSubmit} className="space-y-5">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                   <div>
                     <label htmlFor="name" className="block text-sm font-medium text-slate-600 dark:text-slate-400 mb-1.5">
@@ -242,6 +256,7 @@ const Contact: React.FC = () => {
                   <motion.p
                     initial={{ opacity: 0, y: 8 }}
                     animate={{ opacity: 1, y: 0 }}
+                    role="status"
                     className="text-center text-sm text-emerald-600 dark:text-emerald-400 font-medium"
                   >
                     Thanks! I'll get back to you soon.
@@ -252,12 +267,15 @@ const Contact: React.FC = () => {
                   <motion.div
                     initial={{ opacity: 0, y: 8 }}
                     animate={{ opacity: 1, y: 0 }}
+                    role="alert"
                     className="text-center"
                   >
-                    <p className="text-sm text-red-500 font-medium">{errorMessage || 'Something went wrong. Please try again.'}</p>
+                    <p className="text-sm text-red-500 font-medium">
+                      {errorMessage || 'Something went wrong. Please try again.'}
+                    </p>
                     <div className="mt-3 flex justify-center">
                       <a
-                        href={`mailto:pvvishwapvvishwa@gmail.com?subject=${encodeURIComponent(formState.subject || 'Contact from portfolio')}&body=${encodeURIComponent(`Name: ${formState.name}\n\n${formState.message}`)}`}
+                        href={`mailto:vishwav.main@gmail.com?subject=${encodeURIComponent(formState.subject || 'Contact from portfolio')}&body=${encodeURIComponent(`Name: ${formState.name}\n\n${formState.message}`)}`}
                         className="btn-secondary"
                       >
                         Email me directly
@@ -269,7 +287,7 @@ const Contact: React.FC = () => {
             </div>
           </motion.div>
 
-          {/* ── Contact info cards ── */}
+          {/* ── Contact Info Cards ── */}
           <motion.div
             variants={slideInRight}
             initial="hidden"
@@ -278,34 +296,9 @@ const Contact: React.FC = () => {
             custom={0.3}
             className="lg:col-span-2 space-y-4"
           >
-            {contactInfo.map((item, i) => {
-              const Wrapper = item.url ? 'a' : 'div';
-              const wrapperProps = item.url
-                ? { href: item.url, target: item.label !== 'Email' ? '_blank' : undefined, rel: 'noopener noreferrer' }
-                : {};
-              return (
-                <motion.div
-                  key={item.label}
-                  initial={{ opacity: 0, x: 30 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: 0.15 + i * 0.08, duration: 0.4 }}
-                >
-                  <Wrapper
-                    {...(wrapperProps as any)}
-                    className="glass-card p-6 flex flex-col items-center justify-center gap-4 text-center group hover:-translate-y-1 transition-all duration-300 cursor-pointer block h-full min-h-[160px]"
-                  >
-                    <div className={`w-14 h-14 rounded-full ${item.color} flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform`}>
-                      <item.icon size={26} className="text-white" />
-                    </div>
-                    <div className="w-full">
-                      <p className="font-display font-bold text-slate-800 dark:text-white text-lg mb-1">{item.label}</p>
-                      <p className="text-sm text-slate-500 dark:text-slate-400 font-medium break-all">{item.value}</p>
-                    </div>
-                  </Wrapper>
-                </motion.div>
-              );
-            })}
+            {contactInfo.map((item, i) => (
+              <ContactCard key={item.label} item={item} index={i} />
+            ))}
           </motion.div>
         </div>
       </div>

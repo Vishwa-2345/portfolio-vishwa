@@ -78,17 +78,26 @@ npm run build
 npm run preview
 ```
 
-## Email Setup (Optional)
+## Email Setup
 
-To enable the contact form's EmailJS integration, create a `.env` file in the project root:
+The contact form sends email through EmailJS. Create a `.env` file in the project root:
 
 ```env
-VITE_EMAILJS_SERVICE=your_service_id
-VITE_EMAILJS_TEMPLATE=your_template_id
+VITE_EMAILJS_SERVICE=service_xxx
+VITE_EMAILJS_TEMPLATE=template_xxx
 VITE_EMAILJS_PUBLIC=your_public_key
 ```
 
-Without these, the form falls back to FormSubmit and then to a mailto link.
+Your EmailJS template should use these variables:
+
+```text
+{{name}}
+{{email}}
+{{subject}}
+{{message}}
+```
+
+The form also sends `reply_to` so replies go to the sender. Restart the dev server after changing `.env`. Without valid values, the form shows an error and a direct email link instead of sending.
 
 ## Deployment
 

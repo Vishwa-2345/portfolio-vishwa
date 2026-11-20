@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import ProjectDetail from './components/ProjectDetail';
@@ -27,32 +27,6 @@ const FLOAT_ITEMS = [
   { emoji: '🚀', label: 'Deploy', x: 92, y: 38 },
   { emoji: '💾', label: 'DB', x: 18, y: 88 },
   { emoji: '☁️', label: 'Cloud', x: 80, y: 85 },
-];
-
-/* Code snippets that scroll on the "monitor" */
-const MONITOR_LINES = [
-  'const App = () => {',
-  '  const [data, setData] = useState([]);',
-  '  useEffect(() => {',
-  '    fetchProjects().then(setData);',
-  '  }, []);',
-  '  return <Layout>{data.map(renderCard)}</Layout>;',
-  '};',
-  '',
-  'export default App;',
-  '',
-  '// Building something amazing...',
-  'function fetchProjects() {',
-  '  return api.get("/projects");',
-  '}',
-];
-
-/* Progress steps that appear sequentially */
-const BUILD_STEPS = [
-  { icon: '📦', text: 'Initializing...', delay: 0.2 },
-  { icon: '⚙️', text: 'Compiling...', delay: 0.6 },
-  { icon: '🎨', text: 'Styling...', delay: 1.0 },
-  { icon: '✅', text: 'Ready!', delay: 1.4 },
 ];
 
 const DevScene: React.FC<{ onEnter: () => void }> = ({ onEnter }) => {
@@ -160,7 +134,7 @@ function App(): React.JSX.Element {
           />
 
           <BrowserRouter>
-            <Navbar theme={theme} />
+            <Navbar />
             <ThemeToggle theme={theme} toggleTheme={toggleTheme} />
 
             <Routes>

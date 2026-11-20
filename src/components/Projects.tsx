@@ -46,6 +46,7 @@ const Projects: React.FC = () => {
               codeLink={project.codeLink}
             />
           ))}
+
         </motion.div>
       </div>
     </section>

@@ -2,16 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { HiOutlineMenu, HiOutlineX } from 'react-icons/hi';
-import { FiCode } from 'react-icons/fi';
 import { navVariants } from '../utils/animations';
-
-interface NavbarProps {
-  theme: string;
-}
 
 const navItems = ['about', 'skills', 'projects', 'contact'];
 
-const Navbar: React.FC<NavbarProps> = ({ theme }) => {
+const Navbar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState('');

@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { HiOutlineHeart, HiOutlineArrowUp } from 'react-icons/hi';
+import { HiOutlineArrowUp } from 'react-icons/hi';
 import { FiCode } from 'react-icons/fi';
 
 const Footer: React.FC = () => {
